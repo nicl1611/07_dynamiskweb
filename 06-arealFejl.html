@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="da">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arealtest</title>
+    <link rel="stylesheet" href="">
+</head>
+
+<body>
+
+    <h2>Angiv længde og bredde:</h2>
+
+    <p>Længde:</p>
+    <input type=text id="length">
+    <p>Bredde:</p>
+    <input type=text id="width">
+
+    <button>Beregn areal, kig i konsollen for resultatet</button>
+
+    <script>
+        let resultat;
+
+        document.querySelector("button").addEventListener("click", udregnAreal);
+
+        function udregnAreal() {
+            let length = document.querySelector("#length").value;
+            let width = document.querySelector("#width").value;
+            let a = areal(length, width);
+            let resultat;
+
+            if (isNaN(a)) {
+                resultat = "Det er ikke et tal, prøv igen."
+            } else if (a <= 0) {
+                resultat = "Arealet er mindre end nul, prøv igen."
+            } else {
+                resultat = `${length} ganget med ${width} giver arealet ${a}.`;
+            }
+            console.log(resultat);
+        }
+
+        function areal(l, w) {
+            return l * w;
+        }
+        console.log(resultat);
+    </script>
+</body></html>
