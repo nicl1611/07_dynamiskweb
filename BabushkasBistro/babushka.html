@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Bistro Babushka</title>
+
+
+    <style>
+        article {
+            border: 1px solid rgba(0, 0, 0, 0.35);
+            padding: 10px;
+            border-radius: 10%;
+            transition-duration: 0.4s;
+        }
+
+        article:hover {
+            box-shadow: 2px 0px 5px 5px black;
+
+        }
+
+        img {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 20%;
+
+        }
+
+        #container {
+            width: 90vw;
+            max-width: 1200;
+            margin: 0 auto;
+            display: grid;
+            grid-gap: 10px;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        }
+
+        header {
+            display: flex;
+            justify-content: center;
+        }
+
+        .valgt {
+            color: #bc9b7d;
+        }
+
+        h1 {
+            text-align: center;
+            font-family: '', sans-serif;
+
+        }
+
+        h2 {
+            font-family: 'Roboto', sans-serif;
+
+        }
+
+        p {
+            font-family: 'Roboto', sans-serif;
+
+        }
+
+        .pris {
+            font-style: oblique;
+            color: #bc9b7d;
+
+        }
+
+        .filter {
+            margin: 3px;
+            transition-duration: 0.4s;
+            border: 1px solid #bc9b7d;
+            background-color: white;
+            color: #bc9b7d;
+            padding: 10px 25px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+
+        }
+
+        .filter:hover {
+            background-color: #bc9b7d;
+            color: white;
+        }
+
+        #splash {
+            background-image: url(babushka.png);
+            width: 100vw;
+            height: 35vh;
+            background-size: cover;
+            background-position: 52% 0%;
+            margin-bottom: 2em;
+            border-bottom: 1px solid black;
+
+        }
+
+        #popup {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, .8);
+            display: none;
+        }
+
+        #popup article {
+            width: 80vw;
+            height: 80vh;
+            margin: 4rem auto;
+            background-color: white;
+        }
+
+        #luk {
+            position: fixed;
+            top 0;
+            right: 8em;
+            color: black;
+            border-radius: 5px;
+            padding: .1em;
+            cursor: pointer;
+            background-color: white;
+            transition-duration: 0.4s;
+        }
+
+        #luk:hover {
+            background-color: black;
+            color: white;
+        }
+
+        .oprindelse {
+            font-style: oblique;
+            color: black;
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+
+    <section id="splash">
+
+    </section>
+
+
+    <header>
+
+        <button class="filter" data-kategori="alle">Menu</button>
+        <button class="filter" data-kategori="forretter">Forretter</button>
+        <button class="filter" data-kategori="hovedretter">Hovedretter</button>
+        <button class="filter" data-kategori="sideorders">Sideorders</button>
+        <button class="filter" data-kategori="desserter">Desserter</button>
+        <button class="filter" data-kategori="drikkevarer">Drikkevarer</button>
+
+
+
+    </header>
+
+    <section id="popup">
+
+        <article>
+
+            <div id="luk">✕</div>
+            <h2></h2>
+            <img src="" alt="">
+            <section>
+
+                <h2><span class="navn"></span></h2>
+                <p> <span class="beskrivelse"></span></p>
+                <p><span class="oprindelse"></span></p>
+                <img src="" alt="">
+
+
+            </section>
+
+        </article>
+
+    </section>
+
+    <h1>Menu</h1>
+
+    <section id="container">
+
+    </section>
+
+    <template>
+
+
+        <article>
+            <h2></h2>
+            <img src="" alt="">
+            <h2 class="navn"></h2>
+            <p class="kort"></p>
+            <p class="pris"></p>
+
+
+        </article>
+    </template>
+    <script>
+        let filter = "alle";
+        let retter;
+        let container = document.querySelector("#container");
+        let temp = document.querySelector("template");
+
+        const link = "https://spreadsheets.google.com/feeds/list/17Dd7DvkPaFamNUdUKlrFgnH6POvBJXac7qyiS6zNRw0/od6/public/values?alt=json"
+
+        document.addEventListener("DOMContentLoaded", hentData);
+
+
+        async function hentData() {
+            const respons = await fetch(link);
+            retter = await respons.json();
+            addEventListenersToButtons();
+            vis(retter);
+        }
+
+        function vis(retter) {
+            container.innerHTML = "";
+            retter.feed.entry.forEach(ret => {
+                if (filter == "alle" || filter == ret.gsx$kategori.$t.toLowerCase()) {
+                    console.log(ret);
+                    const klon = temp.cloneNode(true).content;
+                    klon.querySelector(".navn").textContent = ret.gsx$navn.$t;
+                    klon.querySelector("img").src = "imgs/small/" + ret.gsx$billede.$t + "-sm.jpg";
+                    klon.querySelector(".kort").textContent = ret.gsx$kort.$t;
+                    klon.querySelector(".pris").textContent = "Pris: " + ret.gsx$pris.$t + ",-";
+
+                    klon.querySelector("article").addEventListener("click", () => visDetaljer(ret));
+
+                    container.appendChild(klon);
+
+                }
+
+            })
+
+        }
+
+        function visDetaljer(ret) {
+            popup.style.display = "block";
+            popup.querySelector(".navn").textContent = ret.gsx$navn.$t;
+            popup.querySelector(".oprindelse").textContent = "Oprindelse: " + ret.gsx$oprindelse.$t;
+            popup.querySelector(".beskrivelse").textContent = ret.gsx$lang.$t;
+            popup.querySelector("img").src = "imgs/small/" + ret.gsx$billede.$t + "-sm.jpg";
+
+        }
+
+        document.querySelector("#luk").addEventListener("click", () => popup.style.display = "none");
+
+
+        function addEventListenersToButtons() {
+            document.querySelectorAll(".filter").forEach((btn) => {
+                btn.addEventListener("click", filterBTNs);
+            });
+        };
+
+        function filterBTNs() {
+            filter = this.dataset.kategori;
+            document.querySelector("h1").textContent = this.textContent;
+            document.querySelectorAll(".filter").forEach((btn) => {
+
+
+                btn.classList.remove("valgt");
+
+            });
+
+            this.classList.add("valgt");
+            vis(retter);
+        }
+
+    </script>
+</body>
+
+</html>

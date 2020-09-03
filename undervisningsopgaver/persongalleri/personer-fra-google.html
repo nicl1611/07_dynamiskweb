@@ -6,13 +6,24 @@
     <title>Persongalleri</title>
     <style>
         article {
-            border: 1px solid #333;
-            padding: 10px;
+            border: 3px solid #34de;
+            padding: 30px;
+            border-radius: 25px;
         }
 
         img {
-            max-width: 30%;
+            max-width: 60%;
         }
+
+        section {
+            width: 90vw;
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-gap: 10px;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        }
+
     </style>
 </head>
 
@@ -38,6 +49,8 @@
         </article>
     </template>
     <script>
+        let personer;
+        let filter = "k";
         let container = document.querySelector("section");
         let temp = document.querySelector("template");
 
@@ -78,5 +91,8 @@
         }
 
         hentData();
+
     </script>
-</body></html>
+</body>
+
+</html>
